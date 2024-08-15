@@ -49,6 +49,7 @@ function sendBrowserDataToServer(ip, webrtcIps, uuid) {
   fetch('http://localhost:8080/api/score/v1/assessment/check', {
     method: 'POST',
     headers: headers,
+    mode: 'no-cors',
     body: JSON.stringify(browserData)
   })
     .then(response => response.json())
