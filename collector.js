@@ -26,7 +26,7 @@ function getWebRTCIPs() {
 
 
 // Function to generate browser data and send it to the server
-function sendBrowserDataToServer(ip, webrtcIps, uuid) {
+function sendBrowserDataToServer(ip, webrtcIps, apiToken) {
   var browserData = {
     ip: ip,
     webrtc_ip: webrtcIps.length > 0 ? webrtcIps[0] : null, // Take the first WebRTC IP address
@@ -39,11 +39,11 @@ function sendBrowserDataToServer(ip, webrtcIps, uuid) {
     audio_hash: getAudioHash(),
     languages_js: navigator.languages ? navigator.languages.join(',') : (navigator.language || navigator.userLanguage),
     fonts_hash: getFontsHash(),
-    uuid: uuid
+    uuid: '3e611f4e-f6d7-4798-abd5-b5d5608d4f2c'
   };
-  var headers = new Headers();
+  const headers = new Headers();
   headers.append('Content-Type', 'application/json');
-  headers.append('X-Api-Token', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NWMxNjgwYi0wYzAzLTRiMmUtOTQ2OS0yZGNjYmZlODRkZGQiLCJpc3N1ZWRfZm9yIjoiYWRtaW4ifQ.GSe4z6PjRplCLdZV7-lln4YohYkLQYuMx-qwHAxn_Kg');
+  headers.append('X-Api-Token', apiToken);
 
   // Send data to the server
   fetch('http://localhost:8080/api/score/v1/assessment/check', {
@@ -63,10 +63,10 @@ function sendBrowserDataToServer(ip, webrtcIps, uuid) {
 // Get IP and WebRTC IP addresses
 Promise.all([getIP(), getWebRTCIPs()]).then(([ip, webrtcIp]) => {
   // Get UUID from the URL
-  const uuid = getUUIDFromURL();
+  const apiToken = getApiToken();
 
   // Call the function to send browser data to the server
-  sendBrowserDataToServer(ip, webrtcIp, uuid);
+  sendBrowserDataToServer(ip, webrtcIp, apiToken);
 });
 
 // Function to generate a random hash
@@ -183,9 +183,18 @@ async function getIP() {
 }
 
 // Function to extract UUID from the URL
-function getUUIDFromURL() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('token'); // Assuming the token is the UUID
+function getApiToken() {
+  const tokenSelector = document.querySelectorAll('[score-api-token]');
+  let apiToken;
+  if (tokenSelector != null) {
+    const attribute = tokenSelector[0]['attributes']['score-api-token'];
+    apiToken = !!attribute ? attribute.value : null;
+  }
+  if (!apiToken) {
+    console.error("Can't find API token to proceed :c")
+    throw Error("Can't find API token to proceed :c");
+  }
+  return apiToken; // Assuming the token is the UUID
 }
 
 function sha1(str) {
