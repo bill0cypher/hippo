@@ -43,7 +43,7 @@ function sendBrowserDataToServer(ip, webrtcIps, uuid) {
   };
   var headers = new Headers();
   headers.append('Content-Type', 'application/json');
-  headers.append('X-Api-Token', '3e611f4e-f6d7-4798-abd5-b5d5608d4f2c');
+  headers.append('X-Api-Token', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NWMxNjgwYi0wYzAzLTRiMmUtOTQ2OS0yZGNjYmZlODRkZGQiLCJpc3N1ZWRfZm9yIjoiYWRtaW4ifQ.GSe4z6PjRplCLdZV7-lln4YohYkLQYuMx-qwHAxn_Kg');
 
   // Send data to the server
   fetch('http://localhost:8080/api/score/v1/assessment/check', {
